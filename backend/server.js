@@ -37,14 +37,31 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 /* ===================== APP ===================== */
 
 const app = express();
+app.set("trust proxy", 1);
 const server = http.createServer(app);
 
 /* ===================== MIDDLEWARE ===================== */
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin(origin, callback) {
+      // Allow server-to-server requests or tools like Postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked: ${origin}`));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -89,6 +106,8 @@ app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "SkillSphere API Running 🚀",
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -155,7 +174,9 @@ const startServer = async () => {
     server.listen(PORT, () => {
       console.log("\n======================================");
       console.log("🚀 SkillSphere Server Started");
-      console.log(`🌐 Server: http://localhost:${PORT}`);
+      console.log(`🌐 Server Port : ${PORT}`);
+console.log(`🌍 Frontend    : ${process.env.FRONTEND_URL}`);
+console.log(`🔑 Environment : ${process.env.NODE_ENV || "development"}`);
       console.log("======================================\n");
     });
   } catch (error) {
