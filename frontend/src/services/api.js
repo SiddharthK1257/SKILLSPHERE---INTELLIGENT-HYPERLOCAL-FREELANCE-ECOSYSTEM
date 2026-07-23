@@ -4,13 +4,21 @@ import axios from "axios";
    API CONFIGURATION
 ========================================================== */
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.replace(/\/+$/, "");
+  }
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    return "http://localhost:5000/api";
+  }
+  return "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const API = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 90000, // 90 seconds timeout for Render cold starts
 
   headers: {
     Accept: "application/json",
@@ -93,15 +101,28 @@ API.interceptors.response.use(
   },
 
   async (error) => {
+    const originalRequest = error.config;
     const response = error.response;
 
     if (!response) {
-      console.error(
-        "NETWORK ERROR: Server did not respond.",
+      console.warn(
+        "NETWORK / TIMEOUT ERROR: Server did not respond in time.",
         error.message
       );
 
-      return Promise.reject(error);
+      // Automatic retry once for network errors/timeouts (e.g., Render waking up)
+      if (originalRequest && !originalRequest._retry) {
+        originalRequest._retry = true;
+        console.log("Retrying request after network delay...");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return API(originalRequest);
+      }
+
+      const formattedError = new Error("Server is waking up or unavailable. Please try again.");
+      formattedError.response = {
+        data: { message: "Server did not respond in time. Please check your internet connection or try again shortly." }
+      };
+      return Promise.reject(formattedError);
     }
 
     const {
