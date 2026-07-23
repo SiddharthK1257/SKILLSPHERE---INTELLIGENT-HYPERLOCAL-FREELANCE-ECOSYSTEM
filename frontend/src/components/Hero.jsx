@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -22,6 +24,18 @@ import adobeLogo from "../assets/companies/adobe.png";
 import openaiLogo from "../assets/companies/openai.png";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/browse-gigs");
+    }
+  };
+
   const skills = [
     "React",
     "Node.js",
@@ -198,7 +212,7 @@ const Hero = () => {
 
           {/* Search */}
 
-          <div className="mt-10 overflow-hidden rounded-3xl border bg-white shadow-2xl">
+          <form onSubmit={handleSearchSubmit} className="mt-10 overflow-hidden rounded-3xl border bg-white shadow-2xl">
 
             <div className="flex flex-col lg:flex-row">
 
@@ -207,13 +221,16 @@ const Hero = () => {
                 <Search className="text-slate-400" />
 
                 <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent px-4 py-6 outline-none"
                   placeholder="Search Web Development, AI, UI/UX..."
                 />
 
               </div>
 
-              <button className="bg-gradient-to-r from-blue-600 to-cyan-500 px-10 py-6 font-semibold text-white">
+              <button type="submit" className="bg-gradient-to-r from-blue-600 to-cyan-500 px-10 py-6 font-semibold text-white cursor-pointer hover:opacity-90 transition">
 
                 Search
 
@@ -221,8 +238,9 @@ const Hero = () => {
 
             </div>
 
-          </div>
-                    {/* =========================
+          </form>
+
+          {/* =========================
               TRENDING SKILLS
           ========================= */}
 
@@ -241,6 +259,8 @@ const Hero = () => {
 
               <motion.button
                 key={skill}
+                type="button"
+                onClick={() => navigate(`/browse-gigs?category=${encodeURIComponent(skill)}`)}
                 whileHover={{
                   y: -5,
                   scale: 1.05,
@@ -248,7 +268,7 @@ const Hero = () => {
                 whileTap={{
                   scale: 0.95,
                 }}
-                className="rounded-full border border-blue-200 bg-white px-5 py-2 text-sm font-medium shadow-md transition-all hover:bg-gradient-to-r hover:from-blue-600 hover:to-cyan-500 hover:text-white"
+                className="rounded-full border border-blue-200 bg-white px-5 py-2 text-sm font-medium shadow-md transition-all hover:bg-gradient-to-r hover:from-blue-600 hover:to-cyan-500 hover:text-white cursor-pointer"
               >
                 {skill}
               </motion.button>
@@ -277,6 +297,8 @@ const Hero = () => {
           >
 
             <motion.button
+              type="button"
+              onClick={() => navigate("/browse-gigs")}
               whileHover={{
                 scale: 1.04,
                 y: -3,
@@ -284,7 +306,7 @@ const Hero = () => {
               whileTap={{
                 scale: 0.98,
               }}
-              className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-2xl"
+              className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-2xl cursor-pointer"
             >
 
               Explore Services
@@ -297,6 +319,8 @@ const Hero = () => {
             </motion.button>
 
             <motion.button
+              type="button"
+              onClick={() => navigate("/register")}
               whileHover={{
                 scale: 1.04,
                 y: -3,
@@ -304,7 +328,7 @@ const Hero = () => {
               whileTap={{
                 scale: 0.98,
               }}
-              className="rounded-2xl border-2 border-blue-600 bg-white px-8 py-4 text-lg font-bold text-blue-600 shadow-lg transition-all hover:bg-blue-600 hover:text-white"
+              className="rounded-2xl border-2 border-blue-600 bg-white px-8 py-4 text-lg font-bold text-blue-600 shadow-lg transition-all hover:bg-blue-600 hover:text-white cursor-pointer"
             >
 
               Become a Freelancer

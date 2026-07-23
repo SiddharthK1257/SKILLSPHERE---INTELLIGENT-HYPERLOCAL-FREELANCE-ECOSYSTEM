@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
 import AuthSuccess from "./pages/AuthSuccess";
 import NotFound from "./pages/NotFound";
+import { PrivacyPolicy, TermsConditions, HelpCenter, ContactUs } from "./pages/InfoPages";
 
 /* ===========================
    USER PAGES
@@ -100,6 +101,10 @@ function App() {
         element={<VerifyEmail />}
       />
       <Route path="/auth/success" element={<AuthSuccess />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsConditions />} />
+      <Route path="/help" element={<HelpCenter />} />
+      <Route path="/contact" element={<ContactUs />} />
 
       {/* DASHBOARD */}
 

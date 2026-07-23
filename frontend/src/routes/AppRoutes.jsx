@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
+import { PrivacyPolicy, TermsConditions, HelpCenter, ContactUs } from "../pages/InfoPages";
 
 // Main Pages
 import Dashboard from "../pages/Dashboard";
@@ -47,6 +48,11 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
 
       <Route path="/register" element={<Register />} />
+
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsConditions />} />
+      <Route path="/help" element={<HelpCenter />} />
+      <Route path="/contact" element={<ContactUs />} />
 
       {/* ======================
           USER
