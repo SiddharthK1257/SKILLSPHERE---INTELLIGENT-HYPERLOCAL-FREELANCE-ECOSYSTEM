@@ -1740,5 +1740,3 @@ export const getActiveProjects = async (
     );
   }
 };
-
-
