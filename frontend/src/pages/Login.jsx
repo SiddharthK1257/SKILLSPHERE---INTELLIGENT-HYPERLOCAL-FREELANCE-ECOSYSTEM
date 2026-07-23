@@ -36,22 +36,8 @@ const Login = () => {
 
   // Redirect user based on role
   const redirectByRole = (role) => {
-    switch (role) {
-      case "admin":
-        navigate("/admin/dashboard");
-        break;
-
-      case "freelancer":
-        navigate("/dashboard");
-        break;
-
-      case "client":
-        navigate("/dashboard");
-        break;
-
-      default:
-        navigate("/dashboard");
-    }
+    const target = role === "admin" ? "/admin/dashboard" : "/dashboard";
+    window.location.href = target;
   };
 
   // ==========================
@@ -69,12 +55,11 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      redirectByRole(data.user.role);
+      redirectByRole(data.user?.role);
     } catch (error) {
       setUrlError(
         error.response?.data?.message || "Login Failed. Please check your credentials."
       );
-    } finally {
       setLoading(false);
     }
   };
@@ -89,9 +74,17 @@ const Login = () => {
       setGoogleLoading(true);
       setUrlError("");
 
+      if (!credentialResponse?.credential) {
+        throw new Error("No Google credential received from Google SDK.");
+      }
+
       const { data } = await API.post("/auth/google", {
         credential: credentialResponse.credential,
       });
+
+      if (!data?.token || !data?.user) {
+        throw new Error(data?.message || "Google authentication response invalid.");
+      }
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -102,14 +95,15 @@ const Login = () => {
 
       setUrlError(
         error.response?.data?.message ||
-          "Google Login Failed."
+          error.message ||
+          "Google Login Failed. Please try again or use Google Redirect."
       );
-    } finally {
       setGoogleLoading(false);
     }
   };
 
   const handlePassportGoogleLogin = () => {
+    setGoogleLoading(true);
     const backendUrl = (import.meta.env.VITE_API_URL || "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api").replace(/\/+$/, "");
     window.location.href = `${backendUrl}/auth/google/auth`;
   };

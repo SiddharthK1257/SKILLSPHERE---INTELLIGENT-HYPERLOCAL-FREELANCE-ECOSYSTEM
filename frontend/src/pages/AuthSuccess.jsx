@@ -25,17 +25,16 @@ const AuthSuccess = () => {
         const user = data.user || data;
         localStorage.setItem("user", JSON.stringify(user));
 
-        if (user.role === "admin") {
-          navigate("/admin/dashboard");
-        } else {
-          navigate("/dashboard");
-        }
+        const target = user.role === "admin" ? "/admin/dashboard" : "/dashboard";
+        window.location.href = target;
       })
       .catch((err) => {
         console.error("Failed to fetch user profile post-auth:", err);
         localStorage.removeItem("token");
         setError("Failed to fetch user profile. Redirecting to login...");
-        setTimeout(() => navigate("/login"), 3000);
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2500);
       });
   }, [searchParams, navigate]);
 
