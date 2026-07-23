@@ -12,21 +12,16 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // =========================
 export const registerUser = async (req, res) => {
   try {
-    const {
-  name,
-  email,
-  password,
-  role,
-} = req.body || {};
+    const { name, email, password, role } = req.body || {};
 
-const allowedRoles = ["client", "freelancer"];
+    const allowedRoles = ["client", "freelancer"];
 
-if (role && !allowedRoles.includes(role)) {
-  return res.status(400).json({
-    success: false,
-    message: "Invalid role selected.",
-  });
-}
+    if (role && !allowedRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role selected.",
+      });
+    }
 
     // Validation
     if (!name || !email || !password) {
@@ -36,9 +31,11 @@ if (role && !allowedRoles.includes(role)) {
       });
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+
     // Existing user
     const existingUser = await User.findOne({
-      email: email.toLowerCase(),
+      email: cleanEmail,
     });
 
     if (existingUser) {
@@ -48,29 +45,26 @@ if (role && !allowedRoles.includes(role)) {
       });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
-
     // Email verification token
-const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
-const user = await User.create({
-  name,
-  email: email.toLowerCase(),
-  password,
-  role: role || "client",
+    // Note: User model pre-save hook will hash password automatically
+    const user = await User.create({
+      name: name.trim(),
+      email: cleanEmail,
+      password,
+      role: role || "client",
 
-  isVerified: false,
-  emailVerified: false,
+      isVerified: false,
+      emailVerified: false,
 
-  emailVerificationToken: verificationToken,
+      emailVerificationToken: verificationToken,
 
-  emailVerificationExpires:
-    Date.now() + 24 * 60 * 60 * 1000,
-});
+      emailVerificationExpires: Date.now() + 24 * 60 * 60 * 1000,
+    });
 
-    const verifyURL =
-      `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+    const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, "");
+    const verifyURL = `${frontendUrl}/verify-email/${verificationToken}`;
 
     await sendEmail({
       to: user.email,
@@ -92,11 +86,8 @@ const user = await User.create({
 
     return res.status(201).json({
       success: true,
-      message:
-        "Registration successful. Please verify your email.",
-
+      message: "Registration successful. Please verify your email.",
       token: generateToken(user._id),
-
       user: {
         _id: user._id,
         name: user.name,
@@ -106,11 +97,11 @@ const user = await User.create({
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Registration Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Registration failed.",
     });
   }
 };
@@ -120,10 +111,7 @@ const user = await User.create({
 // =========================
 export const loginUser = async (req, res) => {
   try {
-    const {
-  email,
-  password,
-} = req.body || {};
+    const { email, password } = req.body || {};
 
     if (!email || !password) {
       return res.status(400).json({
@@ -132,16 +120,11 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({
-      email: email.toLowerCase(),
-    }).select("+password");
+    const cleanEmail = email.toLowerCase().trim();
 
-    console.log("================================");
-console.log("LOGIN USER");
-console.log("ID:", user._id);
-console.log("Email:", user.email);
-console.log("Role:", user.role);
-console.log("================================");
+    const user = await User.findOne({
+      email: cleanEmail,
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -153,51 +136,38 @@ console.log("================================");
     if (!user.password) {
       return res.status(400).json({
         success: false,
-        message:
-          "This account uses Google Sign-In.",
+        message: "This account was registered using Google Sign-In. Please sign in with Google.",
+      });
+    }
+
+    const matched = await bcrypt.compare(password, user.password);
+
+    if (!matched) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password.",
       });
     }
 
     if (!user.isVerified) {
       return res.status(403).json({
         success: false,
-        message:
-          "Please verify your email first.",
+        message: "Please verify your email first.",
       });
     }
 
-    console.log("==================================");
-console.log("Entered Email:", email);
-console.log("Entered Password:", password);
-console.log("Stored Hash:", user.password);
-
-const matched = await bcrypt.compare(
-  password,
-  user.password
-);
-
-console.log("Password Match:", matched);
-console.log("==================================");
-
-if (!matched) {
-  return res.status(401).json({
-    success: false,
-    message: "Invalid email or password.",
-  });
-}
-
     /* ==========================================================
-   CHECK TWO FACTOR AUTHENTICATION
-========================================================== */
+       CHECK TWO FACTOR AUTHENTICATION
+    ========================================================== */
 
-if (user.security?.twoFactorEnabled) {
-  return res.status(200).json({
-    success: true,
-    requires2FA: true,
-    userId: user._id,
-    message: "Enter your 2FA verification code.",
-  });
-}
+    if (user.security?.twoFactorEnabled) {
+      return res.status(200).json({
+        success: true,
+        requires2FA: true,
+        userId: user._id,
+        message: "Enter your 2FA verification code.",
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -214,11 +184,11 @@ if (user.security?.twoFactorEnabled) {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Login failed.",
     });
   }
 };
@@ -237,6 +207,13 @@ export const googleLogin = async (req, res) => {
       });
     }
 
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      return res.status(400).json({
+        success: false,
+        message: "Google Client ID is not configured on backend server.",
+      });
+    }
+
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -244,73 +221,95 @@ export const googleLogin = async (req, res) => {
 
     const payload = ticket.getPayload();
 
-    const {
-      sub,
-      email,
-      name,
-      picture,
-      email_verified,
-    } = payload;
+    const { sub, email, name, picture, email_verified } = payload || {};
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Google account does not provide an email.",
+      });
+    }
 
     if (!email_verified) {
       return res.status(400).json({
         success: false,
-        message:
-          "Google email is not verified.",
+        message: "Google email is not verified.",
       });
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+
     let user = await User.findOne({
-      email,
+      email: cleanEmail,
     });
 
     if (!user) {
       user = await User.create({
-        name,
-        email,
+        name: name || cleanEmail.split("@")[0],
+        email: cleanEmail,
         googleId: sub,
-        profileImage: picture,
-
+        profileImage: picture || "",
         role: "client",
-
         isVerified: true,
+        emailVerified: true,
       });
+    } else {
+      let updated = false;
+
+      if (!user.googleId) {
+        user.googleId = sub;
+        updated = true;
+      }
+
+      if (!user.profileImage && picture) {
+        user.profileImage = picture;
+        updated = true;
+      }
+
+      if (!user.isVerified || !user.emailVerified) {
+        user.isVerified = true;
+        user.emailVerified = true;
+        updated = true;
+      }
+
+      if (updated) {
+        await user.save();
+      }
     }
 
     /* ==========================================================
-   CHECK TWO FACTOR AUTHENTICATION
-========================================================== */
+       CHECK TWO FACTOR AUTHENTICATION
+    ========================================================== */
 
-if (user.security?.twoFactorEnabled) {
-  return res.status(200).json({
-    success: true,
-    requires2FA: true,
-    userId: user._id,
-    message: "Enter your 2FA verification code.",
-  });
-}
+    if (user.security?.twoFactorEnabled) {
+      return res.status(200).json({
+        success: true,
+        requires2FA: true,
+        userId: user._id,
+        message: "Enter your 2FA verification code.",
+      });
+    }
 
-return res.status(200).json({
-  success: true,
-  message: "Google Login Successful.",
+    return res.status(200).json({
+      success: true,
+      message: "Google Login Successful.",
 
-  token: generateToken(user._id),
+      token: generateToken(user._id),
 
-  user: {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    profileImage: user.profileImage,
-  },
-});
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+      },
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Google Login Error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        "Google Authentication Failed.",
+      message: error.message || "Google Authentication Failed.",
     });
   }
 };

@@ -39,46 +39,55 @@ router.post("/reset-password/:token", resetPassword);
    GOOGLE OAUTH (PASSPORT)
 ========================================================== */
 
+const getFrontendUrl = () => {
+  const url = process.env.FRONTEND_URL || "http://localhost:5173";
+  return url.replace(/\/+$/, "");
+};
+
 // Redirect to Google
-router.get(
-  "/google/auth",
+router.get("/google/auth", (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    const frontendUrl = getFrontendUrl();
+    return res.redirect(`${frontendUrl}/login?error=google_oauth_not_configured`);
+  }
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
-  })
-);
+  })(req, res, next);
+});
 
 // Google Callback
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    session: false,
-    failureRedirect:
-      `${process.env.FRONTEND_URL}/login?error=google_auth_failed`,
-  }),
+  (req, res, next) => {
+    const frontendUrl = getFrontendUrl();
+    passport.authenticate("google", {
+      session: false,
+      failureRedirect: `${frontendUrl}/login?error=google_auth_failed`,
+    })(req, res, next);
+  },
   (req, res) => {
     try {
+      const frontendUrl = getFrontendUrl();
       const token = jwt.sign(
         {
           id: req.user._id,
           role: req.user.role,
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || "skillsphere_secret",
         {
           expiresIn: "7d",
         }
       );
 
       res.redirect(
-        `${process.env.FRONTEND_URL}/auth/success?token=${token}`
+        `${frontendUrl}/auth/success?token=${encodeURIComponent(token)}`
       );
     } catch (error) {
       console.error("Google Callback Error:", error);
 
-      return res.status(500).json({
-        success: false,
-        message: "Authentication failed.",
-      });
+      const frontendUrl = getFrontendUrl();
+      return res.redirect(`${frontendUrl}/login?error=google_auth_exception`);
     }
   }
 );

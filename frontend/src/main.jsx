@@ -13,7 +13,7 @@ import "./index.css";
 import "./App.css";
 
 const GOOGLE_CLIENT_ID =
-  import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+  import.meta.env.VITE_GOOGLE_CLIENT_ID || "not-configured.apps.googleusercontent.com";
 
 const user = JSON.parse(
   localStorage.getItem("user") || "{}"

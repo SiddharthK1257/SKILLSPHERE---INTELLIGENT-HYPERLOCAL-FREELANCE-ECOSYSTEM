@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import API from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [form, setForm] = useState({
     email: "",
@@ -13,6 +14,18 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [urlError, setUrlError] = useState("");
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam === "google_auth_failed") {
+      setUrlError("Google Sign-In failed or was cancelled. Please try again.");
+    } else if (errorParam === "google_oauth_not_configured") {
+      setUrlError("Google OAuth server parameters are missing. Check server config.");
+    } else if (errorParam) {
+      setUrlError("Authentication error. Please try again.");
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     setForm((prev) => ({
@@ -49,18 +62,17 @@ const Login = () => {
 
     try {
       setLoading(true);
+      setUrlError("");
 
       const { data } = await API.post("/auth/login", form);
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Login Successful!");
-
       redirectByRole(data.user.role);
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Login Failed"
+      setUrlError(
+        error.response?.data?.message || "Login Failed. Please check your credentials."
       );
     } finally {
       setLoading(false);
@@ -75,6 +87,7 @@ const Login = () => {
   ) => {
     try {
       setGoogleLoading(true);
+      setUrlError("");
 
       const { data } = await API.post("/auth/google", {
         credential: credentialResponse.credential,
@@ -83,19 +96,22 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Google Login Successful!");
-
       redirectByRole(data.user.role);
     } catch (error) {
-      console.error(error);
+      console.error("Google Login Error:", error);
 
-      alert(
+      setUrlError(
         error.response?.data?.message ||
-          "Google Login Failed"
+          "Google Login Failed."
       );
     } finally {
       setGoogleLoading(false);
     }
+  };
+
+  const handlePassportGoogleLogin = () => {
+    const backendUrl = (import.meta.env.VITE_API_URL || "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api").replace(/\/+$/, "");
+    window.location.href = `${backendUrl}/auth/google/auth`;
   };
 
   return (
@@ -104,6 +120,20 @@ const Login = () => {
 
         <h1>SkillSphere</h1>
         <p>Welcome Back 👋</p>
+
+        {urlError && (
+          <div style={{
+            backgroundColor: "#fee2e2",
+            color: "#dc2626",
+            padding: "10px 14px",
+            borderRadius: "8px",
+            marginBottom: "16px",
+            fontSize: "14px",
+            textAlign: "center"
+          }}>
+            {urlError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
 
@@ -159,18 +189,38 @@ const Login = () => {
           style={{
             margin: "20px 0",
             display: "flex",
-            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px"
           }}
         >
           {googleLoading ? (
             <p>Signing in with Google...</p>
           ) : (
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() =>
-                alert("Google Login Failed")
-              }
-            />
+            <>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() =>
+                  setUrlError("Google Login Failed. You can also try Google Redirect below.")
+                }
+              />
+              <button
+                type="button"
+                onClick={handlePassportGoogleLogin}
+                style={{
+                  background: "#f1f5f9",
+                  color: "#334155",
+                  border: "1px solid #cbd5e1",
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  cursor: "pointer"
+                }}
+              >
+                Or Sign in via Google Redirect
+              </button>
+            </>
           )}
         </div>
 

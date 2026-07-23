@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
+import AuthSuccess from "./pages/AuthSuccess";
 import NotFound from "./pages/NotFound";
 
 /* ===========================
@@ -98,6 +99,7 @@ function App() {
         path="/verify-email/:token"
         element={<VerifyEmail />}
       />
+      <Route path="/auth/success" element={<AuthSuccess />} />
 
       {/* DASHBOARD */}
 
