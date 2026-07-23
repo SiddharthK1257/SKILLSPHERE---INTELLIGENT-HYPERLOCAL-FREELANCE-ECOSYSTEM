@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.18.1",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^1.41.3",
+    "compute-cosine-similarity": "^1.1.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "google-auth-library": "^10.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.3.0",
+    "mongoose": "^8.24.1",
+    "multer": "^2.2.0",
+    "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^9.0.1",
+    "nodemon": "^3.1.10",
+    "otplib": "^13.4.1",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "socket.io": "^4.8.3",
+    "speakeasy": "^2.0.0",
+    "uuid": "^14.0.1"
+  }
+}

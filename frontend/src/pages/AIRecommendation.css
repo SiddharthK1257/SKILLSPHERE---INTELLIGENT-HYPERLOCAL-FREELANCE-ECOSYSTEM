@@ -1,0 +1,694 @@
+/* =========================================
+   AI Recommendation Page
+========================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ai-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  padding: 40px 8%;
+  font-family: "Poppins", sans-serif;
+}
+
+/* =========================================
+   Loading
+========================================= */
+
+.ai-loading {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+.loader {
+  width: 70px;
+  height: 70px;
+  border: 7px solid #e5e7eb;
+  border-top: 7px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.ai-loading h2 {
+  color: #2563eb;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   Error
+========================================= */
+
+.ai-error {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.ai-error h2 {
+  color: #dc2626;
+}
+
+.ai-error button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: .3s;
+}
+
+.ai-error button:hover {
+  background: #1d4ed8;
+}
+
+/* =========================================
+   Header
+========================================= */
+
+.ai-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.ai-header h1 {
+  font-size: 42px;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.ai-header p {
+  color: #64748b;
+  font-size: 18px;
+}
+
+/* =========================================
+   User Card
+========================================= */
+
+.user-card {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+  margin-bottom: 35px;
+}
+
+.user-card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #2563eb;
+}
+
+.user-card h2 {
+  font-size: 28px;
+  color: #111827;
+}
+
+.user-card p {
+  color: #2563eb;
+  margin: 6px 0;
+  font-weight: 600;
+}
+
+.user-card span {
+  color: #6b7280;
+}
+
+/* =========================================
+   Statistics
+========================================= */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: .3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+}
+
+.stat-card h3 {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.stat-card h1 {
+  color: #2563eb;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+/* =========================================
+   Recommendation List
+========================================= */
+
+.recommendation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.empty {
+  background: white;
+  border-radius: 18px;
+  padding: 60px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.empty h2 {
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.empty p {
+  color: #6b7280;
+}
+
+/* =========================================
+   Recommendation Card
+========================================= */
+
+.recommendation-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease;
+  overflow: hidden;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.18);
+}
+
+/* =========================================
+   Top Section
+========================================= */
+
+.recommendation-top {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.gig-image {
+  width: 230px;
+  height: 170px;
+  border-radius: 15px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.gig-info {
+  flex: 1;
+}
+
+.gig-info h2 {
+  font-size: 28px;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.category {
+  display: inline-block;
+  background: #dbeafe;
+  color: #2563eb;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.description {
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.gig-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.gig-meta span {
+  background: #f8fafc;
+  padding: 8px 15px;
+  border-radius: 10px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* =========================================
+   Match Section
+========================================= */
+
+.match-section {
+  margin-top: 20px;
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.match-header h3 {
+  color: #374151;
+}
+
+.match-header h2 {
+  color: #2563eb;
+  font-size: 34px;
+}
+
+.progress {
+  width: 100%;
+  height: 14px;
+  background: #e5e7eb;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #2563eb,
+    #3b82f6
+  );
+  border-radius: 100px;
+  transition: width 0.8s ease;
+}
+
+.match-level {
+  margin-top: 12px;
+  font-weight: 700;
+  color: #16a34a;
+  font-size: 18px;
+}
+
+/* =========================================
+   Skills
+========================================= */
+
+.skills-section {
+  margin-top: 30px;
+}
+
+.skills-section h3 {
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.skills span {
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.matched {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.missing {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* =========================================
+   Reasons & Suggestions
+========================================= */
+
+.reason-section {
+  margin-top: 30px;
+}
+
+.reason-section h3 {
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.reason-section ul {
+  padding-left: 20px;
+}
+
+.reason-section li {
+  margin-bottom: 10px;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+/* =========================================
+   Freelancer
+========================================= */
+
+.freelancer {
+  margin-top: 35px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 15px;
+}
+
+.freelancer img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2563eb;
+}
+
+.freelancer h4 {
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.freelancer p {
+  color: #6b7280;
+}
+
+/* =========================================
+   Buttons
+========================================= */
+
+.button-group {
+  margin-top: 30px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.view-btn,
+.refresh-btn {
+  flex: 1;
+  min-width: 180px;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.view-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.view-btn:hover {
+  background: #1d4ed8;
+}
+
+.refresh-btn {
+  background: #10b981;
+  color: white;
+}
+
+.refresh-btn:hover {
+  background: #059669;
+}
+
+/* =========================================
+   Responsive Design
+========================================= */
+
+@media (max-width: 1200px) {
+
+  .ai-page {
+    padding: 30px 5%;
+  }
+
+  .gig-image {
+    width: 200px;
+    height: 150px;
+  }
+
+}
+
+@media (max-width: 992px) {
+
+  .recommendation-top {
+    flex-direction: column;
+  }
+
+  .gig-image {
+    width: 100%;
+    height: 280px;
+  }
+
+  .match-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .ai-page {
+    padding: 20px;
+  }
+
+  .ai-header h1 {
+    font-size: 32px;
+  }
+
+  .ai-header p {
+    font-size: 16px;
+  }
+
+  .user-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-card img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gig-image {
+    height: 230px;
+  }
+
+  .gig-info h2 {
+    font-size: 22px;
+  }
+
+  .gig-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .match-header h2 {
+    font-size: 28px;
+  }
+
+  .skills {
+    gap: 8px;
+  }
+
+  .skills span {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+}
+
+@media (max-width: 576px) {
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendation-card {
+    padding: 18px;
+  }
+
+  .gig-image {
+    height: 200px;
+  }
+
+  .gig-info h2 {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .match-header h3 {
+    font-size: 18px;
+  }
+
+  .match-header h2 {
+    font-size: 24px;
+  }
+
+  .freelancer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .view-btn,
+  .refresh-btn {
+    width: 100%;
+    min-width: 100%;
+  }
+
+}
+
+/* =========================================
+   Scrollbar
+========================================= */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1d4ed8;
+}
+
+/* =========================================
+   Fade Animation
+========================================= */
+
+@keyframes fadeUp {
+
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+.recommendation-card {
+  animation: fadeUp .6s ease;
+}
+
+/* =========================================
+   Hover Effects
+========================================= */
+
+.skills span:hover {
+  transform: scale(1.05);
+  transition: .3s;
+}
+
+.gig-image {
+  transition: .4s;
+}
+
+.recommendation-card:hover .gig-image {
+  transform: scale(1.03);
+}
+
+.freelancer img {
+  transition: .3s;
+}
+
+.freelancer:hover img {
+  transform: rotate(6deg);
+}
+
+/* =========================================
+   Focus
+========================================= */
+
+button:focus {
+  outline: none;
+}
+
+/* =========================================
+   Selection
+========================================= */
+
+::selection {
+  background: #2563eb;
+  color: white;
+}
+
+/* =========================================
+   Smooth Scroll
+========================================= */
+
+html {
+  scroll-behavior: smooth;
+}

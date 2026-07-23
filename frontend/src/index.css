@@ -1,0 +1,664 @@
+@import "tailwindcss";
+
+/* ===========================================================
+   RESET
+=========================================================== */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+
+    transition:
+        background-color .3s ease,
+        color .3s ease;
+}
+
+/* ===========================================================
+   ROOT
+=========================================================== */
+
+:root{
+
+    color-scheme:light;
+
+    --primary:#2563eb;
+    --secondary:#06b6d4;
+
+    --success:#10b981;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+
+    --radius:18px;
+
+}
+
+html.dark{
+    color-scheme:dark;
+}
+
+/* ===========================================================
+   ROOT APP
+=========================================================== */
+
+#root{
+    min-height:100vh;
+    isolation:isolate;
+}
+
+/* ===========================================================
+   LINKS
+=========================================================== */
+
+a{
+    text-decoration:none;
+    transition:.25s;
+}
+
+a:hover{
+    opacity:.9;
+}
+
+/* ===========================================================
+   BUTTONS
+=========================================================== */
+
+button{
+
+    cursor:pointer;
+    font:inherit;
+
+    transition:
+        transform .2s ease,
+        box-shadow .25s ease,
+        background-color .25s ease;
+
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:.65;
+}
+
+/* ===========================================================
+   INPUTS
+=========================================================== */
+
+input,
+textarea,
+select{
+
+    font:inherit;
+    outline:none;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background-color .25s ease;
+
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+
+    border-color:#3b82f6;
+
+    box-shadow:
+        0 0 0 4px rgba(59,130,246,.15);
+
+}
+
+/* ===========================================================
+   MEDIA
+=========================================================== */
+
+img,
+svg,
+video,
+canvas{
+    display:block;
+    max-width:100%;
+}
+
+/* ===========================================================
+   LISTS
+=========================================================== */
+
+ul,
+ol{
+    list-style:none;
+}
+
+/* ===========================================================
+   SELECTION
+=========================================================== */
+
+::selection{
+    background:#2563eb;
+    color:white;
+}
+
+/* ===========================================================
+   SCROLLBAR
+=========================================================== */
+
+::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#e2e8f0;
+}
+
+::-webkit-scrollbar-thumb{
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #3b82f6,
+            #06b6d4
+        );
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:
+        linear-gradient(
+            180deg,
+            #2563eb,
+            #0891b2
+        );
+
+}
+
+html.dark ::-webkit-scrollbar-track{
+    background:#0f172a;
+}
+
+html.dark ::-webkit-scrollbar-thumb{
+
+    background:
+        linear-gradient(
+            180deg,
+            #60a5fa,
+            #22d3ee
+        );
+
+}
+
+/* Firefox */
+
+*{
+
+    scrollbar-width:thin;
+
+    scrollbar-color:
+        #3b82f6
+        transparent;
+
+}
+
+/* ===========================================================
+   FOCUS
+=========================================================== */
+
+:focus-visible{
+
+    outline:3px solid #3b82f6;
+    outline-offset:2px;
+
+}
+
+/* ===========================================================
+   GLASS EFFECT
+=========================================================== */
+
+.glass{
+
+    background:
+        rgba(255,255,255,.70);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:
+        1px solid rgba(255,255,255,.28);
+
+}
+
+html.dark .glass{
+
+    background:
+        rgba(15,23,42,.65);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+/* ===========================================================
+   CARD
+=========================================================== */
+
+.card{
+
+    border-radius:20px;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+.card:hover{
+
+    transform:
+        translateY(-6px);
+
+    box-shadow:
+        0 20px 40px rgba(15,23,42,.12);
+
+}
+
+html.dark .card:hover{
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.45);
+
+}
+
+/* ===========================================================
+   SHADOW
+=========================================================== */
+
+.card-shadow{
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.08),
+        0 4px 12px rgba(15,23,42,.04);
+
+}
+
+html.dark .card-shadow{
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.45);
+
+}
+
+/* ===========================================================
+   GRADIENT BACKGROUND
+=========================================================== */
+
+.gradient-bg{
+
+    background:
+
+        radial-gradient(circle at top left,#3b82f630,transparent 35%),
+        radial-gradient(circle at bottom right,#06b6d430,transparent 35%);
+
+}
+
+/* ===========================================================
+   HOVER SCALE
+=========================================================== */
+
+.hover-scale{
+
+    transition:
+        transform .25s ease;
+
+}
+
+.hover-scale:hover{
+    transform:scale(1.03);
+}
+
+/* ===========================================================
+   FLOAT
+=========================================================== */
+
+.float{
+
+    animation:
+        floating 4s ease-in-out infinite;
+
+}
+
+@keyframes floating{
+
+    0%,100%{
+
+        transform:
+            translateY(0px);
+
+    }
+
+    50%{
+
+        transform:
+            translateY(-8px);
+
+    }
+
+}
+
+/* ===========================================================
+   PULSE
+=========================================================== */
+
+.pulse-soft{
+
+    animation:
+        pulseSoft 2s infinite;
+
+}
+
+@keyframes pulseSoft{
+
+    0%{
+
+        box-shadow:
+            0 0 0 0 rgba(37,99,235,.25);
+
+    }
+
+    70%{
+
+        box-shadow:
+            0 0 0 16px rgba(37,99,235,0);
+
+    }
+
+    100%{
+
+        box-shadow:
+            0 0 0 0 rgba(37,99,235,0);
+
+    }
+
+}
+
+/* ===========================================================
+   SPINNER
+=========================================================== */
+
+.spinner{
+
+    width:40px;
+    height:40px;
+
+    border-radius:50%;
+
+    border:4px solid #e2e8f0;
+    border-top:4px solid #2563eb;
+
+    animation:
+        spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+/* ===========================================================
+   SHIMMER
+=========================================================== */
+
+.shimmer{
+
+    position:relative;
+    overflow:hidden;
+
+    background:#e2e8f0;
+
+}
+
+.shimmer::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    transform:translateX(-100%);
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.6),
+            transparent
+        );
+
+    animation:
+        shimmer 1.4s infinite;
+
+}
+
+@keyframes shimmer{
+
+    100%{
+        transform:translateX(100%);
+    }
+
+}
+
+/* ===========================================================
+   FADE
+=========================================================== */
+
+.fade-in{
+
+    animation:
+        fadeIn .45s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:none;
+
+    }
+
+}
+
+/* ===========================================================
+   SCALE
+=========================================================== */
+
+.scale-in{
+
+    animation:
+        scaleIn .3s ease;
+
+}
+
+@keyframes scaleIn{
+
+    from{
+
+        opacity:0;
+        transform:scale(.94);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   SLIDE
+=========================================================== */
+
+.slide-up{
+
+    animation:
+        slideUp .4s ease;
+
+}
+
+@keyframes slideUp{
+
+    from{
+
+        opacity:0;
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:none;
+
+    }
+
+}
+
+/* ===========================================================
+   UTILITIES
+=========================================================== */
+
+.text-gradient{
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #06b6d4
+        );
+
+    -webkit-background-clip:text;
+    color:transparent;
+
+}
+
+.border-gradient{
+
+    border:1px solid transparent;
+
+    background:
+
+        linear-gradient(white,white) padding-box,
+
+        linear-gradient(
+            90deg,
+            #3b82f6,
+            #06b6d4
+        ) border-box;
+
+}
+
+html.dark .border-gradient{
+
+    background:
+
+        linear-gradient(#0f172a,#0f172a) padding-box,
+
+        linear-gradient(
+            90deg,
+            #60a5fa,
+            #22d3ee
+        ) border-box;
+
+}
+
+/* ===========================================================
+   MOBILE
+=========================================================== */
+
+@media (max-width:768px){
+
+    html{
+        font-size:15px;
+    }
+
+    .card:hover{
+        transform:none;
+    }
+
+    button{
+        min-height:44px;
+    }
+
+    input,
+    select,
+    textarea{
+        min-height:44px;
+    }
+
+}
+
+/* ===========================================================
+   REDUCED MOTION
+=========================================================== */
+
+@media (prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+
+        animation:none!important;
+        transition:none!important;
+        scroll-behavior:auto!important;
+
+    }
+
+}

@@ -1,0 +1,398 @@
+/* ==========================================================
+   REVIEW ANALYTICS PAGE
+========================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.analytics-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px;
+  background: #f8fafc;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.analytics-header {
+  margin-bottom: 35px;
+}
+
+.analytics-header h2 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.analytics-header p {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+.analytics-loading {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* ==========================================================
+   SUMMARY CARDS
+========================================================== */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.analytics-card {
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  transition: .35s;
+  box-shadow: 0 10px 35px rgba(15,23,42,.06);
+}
+
+.analytics-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:5px;
+  background:linear-gradient(90deg,#2563eb,#06b6d4);
+}
+
+.analytics-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 25px 45px rgba(15,23,42,.12);
+}
+
+.analytics-card h3{
+  font-size:15px;
+  color:#64748b;
+  margin-bottom:18px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+.analytics-card span{
+  font-size:38px;
+  font-weight:800;
+  color:#0f172a;
+}
+
+/* ==========================================================
+   SECTIONS
+========================================================== */
+
+.analytics-section{
+  background:white;
+  border-radius:24px;
+  padding:30px;
+  margin-bottom:35px;
+  border:1px solid #e5e7eb;
+  box-shadow:0 10px 30px rgba(15,23,42,.05);
+}
+
+.analytics-section h3{
+  font-size:24px;
+  font-weight:700;
+  color:#0f172a;
+  margin-bottom:25px;
+}
+
+/* ==========================================================
+   RATING DISTRIBUTION
+========================================================== */
+
+.distribution{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.distribution-item{
+  display:grid;
+  grid-template-columns:70px 1fr 60px;
+  align-items:center;
+  gap:20px;
+}
+
+.distribution-label{
+  font-weight:700;
+  color:#334155;
+}
+
+.progress{
+  height:12px;
+  border-radius:30px;
+  background:#e2e8f0;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  border-radius:30px;
+  background:linear-gradient(90deg,#2563eb,#06b6d4);
+  transition:.5s;
+}
+
+.distribution-value{
+  text-align:right;
+  font-weight:700;
+  color:#2563eb;
+}
+
+/* ==========================================================
+   KEYWORDS
+========================================================== */
+
+.keywords{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+}
+
+.keyword{
+  padding:10px 18px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#2563eb,#0ea5e9);
+  color:white;
+  font-size:14px;
+  font-weight:700;
+  transition:.3s;
+}
+
+.keyword:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 20px rgba(37,99,235,.25);
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.analytics-table{
+  width:100%;
+  overflow-x:auto;
+}
+
+.analytics-table table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+.analytics-table thead{
+  background:linear-gradient(90deg,#2563eb,#1d4ed8);
+}
+
+.analytics-table th{
+  color:white;
+  padding:18px;
+  font-size:15px;
+  font-weight:700;
+}
+
+.analytics-table td{
+  padding:18px;
+  color:#475569;
+  border-bottom:1px solid #e2e8f0;
+  text-align:center;
+}
+
+.analytics-table tbody tr{
+  transition:.25s;
+}
+
+.analytics-table tbody tr:hover{
+  background:#eff6ff;
+}
+
+/* ==========================================================
+   BADGES
+========================================================== */
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.badge-success{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.badge-warning{
+  background:#fef3c7;
+  color:#b45309;
+}
+
+.badge-danger{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.badge-primary{
+  background:#dbeafe;
+  color:#2563eb;
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.analytics-empty{
+  padding:80px 20px;
+  text-align:center;
+}
+
+.analytics-empty h3{
+  font-size:26px;
+  color:#334155;
+  margin-bottom:15px;
+}
+
+.analytics-empty p{
+  color:#64748b;
+  font-size:16px;
+}
+
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
+
+.analytics-table::-webkit-scrollbar{
+  height:8px;
+}
+
+.analytics-table::-webkit-scrollbar-thumb{
+  background:#2563eb;
+  border-radius:10px;
+}
+
+.analytics-table::-webkit-scrollbar-track{
+  background:#e2e8f0;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+.analytics-container{
+padding:30px;
+}
+
+}
+
+@media(max-width:992px){
+
+.analytics-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.analytics-header h2{
+font-size:32px;
+}
+
+.analytics-section{
+padding:25px;
+}
+
+}
+
+@media(max-width:768px){
+
+.analytics-container{
+padding:20px;
+}
+
+.analytics-grid{
+grid-template-columns:1fr;
+}
+
+.analytics-card{
+padding:24px;
+}
+
+.analytics-card span{
+font-size:32px;
+}
+
+.analytics-header h2{
+font-size:28px;
+}
+
+.analytics-header p{
+font-size:14px;
+}
+
+.analytics-section{
+padding:20px;
+}
+
+.distribution-item{
+grid-template-columns:55px 1fr 45px;
+gap:10px;
+}
+
+.analytics-table table{
+min-width:700px;
+}
+
+}
+
+@media(max-width:480px){
+
+.analytics-container{
+padding:15px;
+}
+
+.analytics-card{
+padding:20px;
+}
+
+.analytics-card span{
+font-size:28px;
+}
+
+.analytics-section{
+padding:18px;
+}
+
+.analytics-section h3{
+font-size:20px;
+}
+
+.keyword{
+font-size:12px;
+padding:8px 14px;
+}
+
+}

@@ -1,0 +1,229 @@
+/* ===================================================
+   REVIEWS PAGE
+=================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.reviews-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 50px;
+  background: #f5f7fb;
+}
+
+/* ===================================================
+   HEADER
+=================================================== */
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.reviews-header h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.reviews-header p {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.review-actions {
+  display: flex;
+  gap: 15px;
+}
+
+/* ===================================================
+   BUTTONS
+=================================================== */
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: .3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  border: none;
+  background: #f3f4f6;
+  padding: 12px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+/* ===================================================
+   ERROR
+=================================================== */
+
+.review-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+/* ===================================================
+   FILTERS
+=================================================== */
+
+.review-filters {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.05);
+}
+
+.review-filters select {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  min-width: 180px;
+}
+
+.review-filters label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+/* ===================================================
+   REVIEW GRID
+=================================================== */
+
+.reviews-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(450px,1fr));
+  gap: 30px;
+}
+
+/* ===================================================
+   EMPTY STATE
+=================================================== */
+
+.no-reviews {
+  grid-column: 1/-1;
+  background: white;
+  padding: 70px;
+  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.05);
+}
+
+.no-reviews h2 {
+  margin-bottom: 15px;
+  color: #111827;
+}
+
+.no-reviews p {
+  color: #6b7280;
+}
+
+/* ===================================================
+   PAGINATION
+=================================================== */
+
+.pagination {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+.pagination span {
+  font-weight: 700;
+}
+
+/* ===================================================
+   ANALYTICS
+=================================================== */
+
+.analytics-link {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+
+@media(max-width:1200px){
+
+.reviews-page{
+padding:30px;
+}
+
+.reviews-container{
+grid-template-columns:repeat(auto-fill,minmax(380px,1fr));
+}
+
+}
+
+@media(max-width:768px){
+
+.reviews-page{
+padding:20px;
+}
+
+.reviews-header{
+flex-direction:column;
+align-items:flex-start;
+gap:20px;
+}
+
+.review-filters{
+flex-direction:column;
+align-items:stretch;
+}
+
+.review-filters select{
+width:100%;
+}
+
+.reviews-container{
+grid-template-columns:1fr;
+}
+
+.pagination{
+flex-direction:column;
+gap:15px;
+}
+
+}
