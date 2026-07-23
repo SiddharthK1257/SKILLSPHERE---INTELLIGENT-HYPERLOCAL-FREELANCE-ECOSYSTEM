@@ -11,7 +11,8 @@ import SchedulerForm from "./SchedulerForm";
 import SchedulerFilter from "./SchedulerFilter";
 import SchedulerCard from "./SchedulerCard";
 
-const API = "http://localhost:5000/api/scheduler";
+const API_BASE = import.meta.env.VITE_API_URL || "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
+const API = `${API_BASE}/scheduler`;
 
 const Scheduler = () => {
   const [slots, setSlots] = useState([]);

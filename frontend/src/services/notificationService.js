@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL ||
+  "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
 
 /* ==========================================================
    GET ALL NOTIFICATIONS

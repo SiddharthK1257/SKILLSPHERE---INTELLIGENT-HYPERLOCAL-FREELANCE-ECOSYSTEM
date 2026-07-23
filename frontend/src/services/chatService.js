@@ -7,7 +7,7 @@ import axios from "axios";
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/chat`
-    : "http://localhost:5000/api/chat",
+    : "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api/chat",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

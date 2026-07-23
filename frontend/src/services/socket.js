@@ -1,7 +1,8 @@
 import { io } from "socket.io-client";
 
 const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+  import.meta.env.VITE_SOCKET_URL ||
+  "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com";
 
 const socket = io(SOCKET_URL, {
   autoConnect: false,

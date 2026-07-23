@@ -16,11 +16,13 @@ const onlineUsers = new Map();
 export const initializeSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin:
-        [
+      origin: [
         "http://localhost:5173",
+        "http://localhost:3000",
+        "https://skillsphere-intelligent-hyperlocal.vercel.app",
         process.env.FRONTEND_URL,
-    ],
+        process.env.CLIENT_URL,
+      ].filter(Boolean),
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE"],
     },

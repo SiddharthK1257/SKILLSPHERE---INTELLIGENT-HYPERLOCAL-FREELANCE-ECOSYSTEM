@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/scheduler";
+const API_BASE = import.meta.env.VITE_API_URL || "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
+const API = `${API_BASE}/scheduler`;
 
 function SchedulerCard({ slot, reload }) {
   const token = localStorage.getItem("token");

@@ -6,7 +6,7 @@ import axios from "axios";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
-  "http://localhost:5000/api";
+  "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
 
 /* ==========================================================
    AXIOS INSTANCE
