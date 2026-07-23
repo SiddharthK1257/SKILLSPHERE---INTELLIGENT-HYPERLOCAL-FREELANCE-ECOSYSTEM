@@ -24,6 +24,7 @@
     "nodemon": "^3.1.10",
     "otplib": "^13.4.1",
     "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
     "socket.io": "^4.8.3",
