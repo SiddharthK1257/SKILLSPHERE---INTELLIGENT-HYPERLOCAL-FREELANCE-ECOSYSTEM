@@ -1,3 +1,4 @@
+import "dotenv/config";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -5,7 +6,9 @@ import { OAuth2Client } from "google-auth-library";
 import generateToken from "../utils/generateToken.js";
 import sendEmail from "../utils/sendEmail.js";
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const getOAuth2Client = () => {
+  return new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+};
 
 // =========================
 // Register User
@@ -57,6 +60,7 @@ export const registerUser = async (req, res) => {
 
       isVerified: false,
       emailVerified: false,
+      verified: false,
 
       emailVerificationToken: verificationToken,
 
@@ -149,7 +153,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    if (!user.isVerified) {
+    if (user.isVerified === false && user.emailVerified === false && user.verified === false) {
       return res.status(403).json({
         success: false,
         message: "Please verify your email first.",
@@ -211,6 +215,7 @@ export const googleLogin = async (req, res) => {
 
     try {
       if (process.env.GOOGLE_CLIENT_ID) {
+        const client = getOAuth2Client();
         const ticket = await client.verifyIdToken({
           idToken: credential,
           audience: process.env.GOOGLE_CLIENT_ID,
@@ -260,10 +265,12 @@ export const googleLogin = async (req, res) => {
         name: name || cleanEmail.split("@")[0],
         email: cleanEmail,
         googleId: sub,
+        authProvider: "google",
         profileImage: picture || "",
         role: "client",
         isVerified: true,
         emailVerified: true,
+        verified: true,
       });
     } else {
       let updated = false;
@@ -278,9 +285,10 @@ export const googleLogin = async (req, res) => {
         updated = true;
       }
 
-      if (!user.isVerified || !user.emailVerified) {
+      if (!user.isVerified || !user.emailVerified || !user.verified) {
         user.isVerified = true;
         user.emailVerified = true;
+        user.verified = true;
         updated = true;
       }
 

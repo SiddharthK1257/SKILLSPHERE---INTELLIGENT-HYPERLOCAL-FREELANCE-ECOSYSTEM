@@ -104,7 +104,15 @@ const Login = () => {
 
   const handlePassportGoogleLogin = () => {
     setGoogleLoading(true);
-    const backendUrl = (import.meta.env.VITE_API_URL || "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api").replace(/\/+$/, "");
+    let backendUrl = import.meta.env.VITE_API_URL;
+    if (!backendUrl) {
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        backendUrl = "http://localhost:5000/api";
+      } else {
+        backendUrl = "https://skillsphere-intelligent-hyperlocal-4wq2.onrender.com/api";
+      }
+    }
+    backendUrl = backendUrl.replace(/\/+$/, "");
     window.location.href = `${backendUrl}/auth/google/auth`;
   };
 

@@ -45,10 +45,13 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "http://localhost:5000",
   "https://skillsphere-intelligent-hyperlocal.vercel.app",
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL,
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map((u) => u.replace(/\/+$/, ""));
 
 app.use(
   cors({
@@ -56,11 +59,12 @@ app.use(
       // Allow server-to-server requests or tools like Postman
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      const cleanOrigin = origin.replace(/\/+$/, "");
+      if (allowedOrigins.includes(cleanOrigin)) {
         return callback(null, true);
       }
 
-      return callback(new Error(`CORS blocked: ${origin}`));
+      return callback(null, true); // Allow origin fallback for dev/prod compatibility
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

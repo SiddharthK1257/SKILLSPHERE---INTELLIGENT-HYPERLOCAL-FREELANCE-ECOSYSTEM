@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -39,15 +40,15 @@ router.post("/reset-password/:token", resetPassword);
    GOOGLE OAUTH (PASSPORT)
 ========================================================== */
 
-const getFrontendUrl = () => {
-  const url = process.env.FRONTEND_URL || "http://localhost:5173";
+const getFrontendUrl = (req) => {
+  const url = process.env.FRONTEND_URL || process.env.CLIENT_URL || (req ? `${req.protocol}://${req.get("host")}` : "http://localhost:5173");
   return url.replace(/\/+$/, "");
 };
 
 // Redirect to Google
 router.get("/google/auth", (req, res, next) => {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     return res.redirect(`${frontendUrl}/login?error=google_oauth_not_configured`);
   }
   passport.authenticate("google", {
@@ -60,7 +61,7 @@ router.get("/google/auth", (req, res, next) => {
 router.get(
   "/google/callback",
   (req, res, next) => {
-    const frontendUrl = getFrontendUrl();
+    const frontendUrl = getFrontendUrl(req);
     passport.authenticate("google", {
       session: false,
       failureRedirect: `${frontendUrl}/login?error=google_auth_failed`,
@@ -68,7 +69,7 @@ router.get(
   },
   (req, res) => {
     try {
-      const frontendUrl = getFrontendUrl();
+      const frontendUrl = getFrontendUrl(req);
       const token = jwt.sign(
         {
           id: req.user._id,
@@ -86,7 +87,7 @@ router.get(
     } catch (error) {
       console.error("Google Callback Error:", error);
 
-      const frontendUrl = getFrontendUrl();
+      const frontendUrl = getFrontendUrl(req);
       return res.redirect(`${frontendUrl}/login?error=google_auth_exception`);
     }
   }

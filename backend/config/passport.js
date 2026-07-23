@@ -1,12 +1,18 @@
+import "dotenv/config";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/User.js";
 
-const clientID = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const callbackURL = process.env.GOOGLE_CALLBACK_URL;
+const getGoogleCredentials = () => {
+  const clientID = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const callbackURL = process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback";
+  return { clientID, clientSecret, callbackURL };
+};
 
-if (clientID && clientSecret && callbackURL) {
+const { clientID, clientSecret, callbackURL } = getGoogleCredentials();
+
+if (clientID && clientSecret) {
   passport.use(
     new GoogleStrategy(
       {
@@ -30,12 +36,14 @@ if (clientID && clientSecret && callbackURL) {
           if (!user) {
             user = await User.create({
               googleId: profile.id,
+              authProvider: "google",
               name: profile.displayName || email.split("@")[0],
               email,
               profileImage: profile.photos?.[0]?.value || "",
               role: "client",
               isVerified: true,
               emailVerified: true,
+              verified: true,
             });
           } else {
             let updated = false;
@@ -50,9 +58,10 @@ if (clientID && clientSecret && callbackURL) {
               updated = true;
             }
 
-            if (!user.isVerified || !user.emailVerified) {
+            if (!user.isVerified || !user.emailVerified || !user.verified) {
               user.isVerified = true;
               user.emailVerified = true;
+              user.verified = true;
               updated = true;
             }
 
@@ -71,7 +80,7 @@ if (clientID && clientSecret && callbackURL) {
   );
 } else {
   console.warn(
-    "⚠️ Google OAuth environment variables are incomplete (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL). Passport Google OAuth is disabled."
+    "⚠️ Google OAuth environment variables are incomplete (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET). Passport Google OAuth is disabled."
   );
 }
 
